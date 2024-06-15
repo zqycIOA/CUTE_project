@@ -4,10 +4,9 @@
 %arrayparam: axiscortx axiscorrx
 %ROIparam: xvec zvec c
 %arrayparam: axiscortx axiscorrx
-function[totalps , totalmask] = calc_phase_shift_vec_dw_CMA(totalframes , psparam , ROIparam , arrayparam)
+function varargout = calc_phase_shift_vec_dw_CMA(totalframes , psparam , ROIparam , arrayparam)
     axiscortx = arrayparam.axiscortx;
     axiscorrx = arrayparam.axiscorrx;
-    CMAvec = psparam.CMAvec;
     N_channels = length(totalframes);
     linevec = zeros(1 , N_channels);
     for lc = 1 : N_channels
@@ -22,6 +21,8 @@ function[totalps , totalmask] = calc_phase_shift_vec_dw_CMA(totalframes , pspara
     emitvec = psstart:pslength:psend;
     [~ , emitnvec] = find(linevec == emitvec');
     emitnvec = emitnvec';
+    if (isfield(psparam , 'CMAvec'))
+    CMAvec = psparam.CMAvec;
     tc = 1;
     for emitn = emitnvec(1 : end - 1)
         [pstemp{tc} , masktemp{tc}] = calc_phase_shift_Hermitian_dw_CMA_CMAvec(xvec ,...
@@ -47,5 +48,28 @@ function[totalps , totalmask] = calc_phase_shift_vec_dw_CMA(totalframes , pspara
             ec = ec + 1
         end
         cc = cc + 1;
+    end
+    varargout{1} = totalps;
+    varargout{2} = totalmask;
+    else
+    tc = 1;
+    for emitn = emitnvec(1 : end - 1)
+        pstemp{tc} = calc_phase_shift_Hermitian_dw(xvec ,...
+            zvec , c , totalframes(emitnvec(tc)) , totalframes(emitnvec(tc+1)) , axiscortx , axiscorrx);
+        tc = tc + 1;
+    end
+    psgap = psparam.psgap; emitlength = psgap/pslength;
+    pstxelen = emitvec(1) : psgap : emitvec(end) - psgap;
+    ec = 1;
+    for txcount = 1:emitlength:length(emitnvec)-1
+        ps = zeros(zlength , xlength);
+        for framecount = txcount : txcount + emitlength-1
+            pc = pstemp{framecount};
+            ps = ps + pc; 
+        end
+        totalps{ec} = ps;
+        ec = ec + 1
+    end
+    varargout{1} = totalps;
     end
 end
