@@ -57,7 +57,7 @@ tone_burst_cycles = 4;
 arrayx = 10;
 xvec = kgrid.y_vec; zvec = kgrid.x_vec; zvec = zvec - zvec(1) - arrayx * dx;
 [xs,zs] = meshgrid(xvec , zvec);
-inclusion_map = makeDisc(Nx, Ny, round(15e-3 / dx) + arrayx , round(-5e-3 / dy) + Ny/2 , round(3e-3 / dx));
+inclusion_map = makeDisc(Nx, Ny, round(15e-3 / dx) + arrayx , Ny/2 , round(3e-3 / dx));
 % inclusion_map = (sqrt(0.2 * (xs + 5e-3).^2 + (zs - 15e-3).^2) <= 4e-3) |...
 %     (sqrt(0.2 * (xs - 5e-3).^2 + (zs - 15e-3).^2) <= 4e-3); 
 % inclusion_map = sqrt((xs / 2).^2 + (zs - 15e-3).^2) < 4e-3;
@@ -87,6 +87,6 @@ medium.density = density_map;
 
 figure; imagesc(xvec * 1e3 , zvec * 1e3 , sound_speed_map);
 set(gca,'DataAspectRatio',[1 1 1])
-filename = './phantom/phantom_info_r3mm_is1450_bg1540_depth15_x-5.mat';
-% filename = './phantom/homo_with_target.mat';
+filename = './phantom/phantom_info_r3mm_is1450_bg1540_depth15_x0.mat';
+% filename = './phantom/phantom_info_homo.mat';
 save(filename);
