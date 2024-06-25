@@ -52,4 +52,4 @@ caxis([-2e-7 2e-7]); colorbar
 axis([-20 20 0 40])
 
 filename = './ps_info/ps_info_pw_r3mm_is1450_bg1540_depth15.mat';
-save(filename , 'totalmask' , 'totalps' , 'ROIparam' , 'psparam' , 'arrayparam');
+save(filename , 'totalmask' , 'totalps' , 'psref' , 'ROIparam' , 'psparam' , 'arrayparam');
