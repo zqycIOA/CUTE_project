@@ -21,7 +21,7 @@ I2(inan) = 0;
 
 DeltaTheta = I1.* conj(I2);
 % PS = medfilt2(angle(DeltaTheta)) / (2 * pi * 5e6);
-PS = angle(DeltaTheta) / (2 * pi * 5e6);
+PS = angle(DeltaTheta);
 for cc = 1 : length(CMAvec)
     PS(cc , : , :) = medfilt2(squeeze(PS(cc , : , :)));
 end

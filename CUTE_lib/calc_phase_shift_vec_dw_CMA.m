@@ -7,10 +7,17 @@
 function varargout = calc_phase_shift_vec_dw_CMA(totalframes , psparam , ROIparam , arrayparam)
     axiscortx = arrayparam.axiscortx;
     axiscorrx = arrayparam.axiscorrx;
+    f0 = arrayparam.f0;
+    if isfield(arrayparam,'tbias')
+        tbias = arrayparam.tbias;
+    else
+        tbias = 0;
+    end
     N_channels = length(totalframes);
     linevec = zeros(1 , N_channels);
     for lc = 1 : N_channels
         linevec(lc) = totalframes(lc).emitele;
+        totalframes(lc).t_array = totalframes(lc).t_array - tbias;
     end
     psstart = psparam.psstart;
     psend = psparam.psend;
@@ -43,7 +50,7 @@ function varargout = calc_phase_shift_vec_dw_CMA(totalframes , psparam , ROIpara
                 ps = ps + squeeze(pc(cc , : , :)); 
                 mask = mask | squeeze(mc(cc , : , :));
             end
-            totalps{cc , ec} = ps;
+            totalps{cc , ec} = ps / (2 * pi * f0);
             totalmask{cc , ec} = double(mask);
             ec = ec + 1
         end
@@ -67,7 +74,7 @@ function varargout = calc_phase_shift_vec_dw_CMA(totalframes , psparam , ROIpara
             pc = pstemp{framecount};
             ps = ps + pc; 
         end
-        totalps{ec} = ps;
+        totalps{ec} = ps / (2 * pi * f0);
         ec = ec + 1
     end
     varargout{1} = totalps;
